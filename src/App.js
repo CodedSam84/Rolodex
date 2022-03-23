@@ -1,15 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
 import { Component } from 'react';
+import CardList from './components/card-list/CardList';
 
 class App extends Component {
   constructor() {
     super();
-
+    
     this.state = {
       monsters: [],
       searchInputValue: ""
     };
+  }
+
+  onSearchChange = (event) => {
+    const searchInputValue = event.target.value.toLowerCase();
+    
+    this.setState(
+      () => {
+        return { searchInputValue };
+      },
+    )
   }
 
   componentDidMount() {
@@ -20,21 +31,21 @@ class App extends Component {
         this.setState(
           () => {
             return { monsters: users };
-          }, 
-          () => { 
-            console.log(this.state);
-          }
+          },
         )
       );
   }
 
   render() {
-    const filteredMonsters = this.state.monsters.filter(
+    const { searchInputValue, monsters } = this.state;
+    const { onSearchChange } = this;
+
+    const filteredMonsters = monsters.filter(
       (monster) => 
         {
           const monsterName = monster.name;
           const monsterNameToLowerCase = monsterName.toLowerCase();
-          return monsterNameToLowerCase.includes(this.state.searchInputValue);
+          return monsterNameToLowerCase.includes(searchInputValue);
         }
     );
     
@@ -44,24 +55,10 @@ class App extends Component {
         <input 
           type="search" 
           placeholder="Search monsters"
-          onChange={
-            (event) => {
-              const searchInputValue = event.target.value.toLowerCase();
-              
-              this.setState(
-                () => {
-                  return { searchInputValue };
-                },
-
-                () => {
-                  console.log(this.state);
-                }
-              )
-            }
-          }
+          onChange={ onSearchChange }
         />
 
-        {
+        {/* {
           filteredMonsters.map((monster) => {
             return (
               <div key={monster.id}> 
@@ -70,7 +67,9 @@ class App extends Component {
             );
            }
           )
-        }
+        } */}
+
+        <CardList monsters = {filteredMonsters}/>
       </div>
     );
   }
